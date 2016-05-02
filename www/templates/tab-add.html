@@ -1,0 +1,42 @@
+<ion-view view-title="Add a Time">
+  <ion-content class="padding">
+    <h2 class="dusky--ta-c">The Current Time Is:</h2>
+    <h3 class="dusky--ta-c">{{ clock | date: 'medium' }}</h3>
+    <p class="dusky--ta-c">The current angle of the sun is: <strong>{{ sunAngle }}&deg</strong></p>
+    <p>Current Address:<br>{{ city }}</p>
+    <div class="row">
+    	<div id="lbl-morning" class="col dusky--weak dusky--ta-c">Before Solar Noon</div>
+    	<div id="lbl-evening" class="col dusky--weak dusky--ta-c">After Solar Noon</div>
+    </div>
+    <div id="weather" class="dusky--ta-c">
+    	<h5><skycon icon="current.currently.icon" id="current-icon"></skycon> {{ current.currently.summary }}</h5>
+    	<p>The temperature now is <span class="large">{{ current.currently.temperature }}&degF</span></p>
+    	<p>The Air Quality Index is currently <span class="large">{{ pollutiondata.currently.AQI }}</span></p>
+    </div>
+    <div id="legend">
+    	<span id="before-sunrise">
+    		<span class="time-span dark morning-dark-time">12:00 AM - {{MorningAstroTwilight | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span twilight morning-astro-time">{{MorningAstroTwilight | date:"hh':'mm a"}} - {{NauticalDawn | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span twilight morning-nau-time">{{NauticalDawn | date:"hh':'mm a"}} - {{Dawn | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span twilight morning-civil-time">{{Dawn | date:"hh':'mm a"}} - {{Sunrise | date:"hh':'mm a"}}</span>
+    	</span><br>
+    	<span id="sunset-sunrise">
+    		<span class="time-span sunrise sunrise-time">{{Sunrise | date:"hh':'mm a"}} - {{SunriseEnd | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span daylight daylight-time">{{SunriseEnd | date:"hh':'mm a"}} - {{SunsetStart | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span sunset sunset-time">{{SunsetStart | date:"hh':'mm a"}} - {{Sunset | date:"hh':'mm a"}}</span><br>
+    	</span>
+    	<span id="after-sunset">
+			<span class="time-span twilight night-civil-time">{{Sunset | date:"hh':'mm a"}} - {{Dusk | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span twilight night-nau-time">{{Dusk | date:"hh':'mm a"}} - {{NauticalDusk | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span twilight night-astro-time">{{NauticalDusk | date:"hh':'mm a"}} - {{Night | date:"hh':'mm a"}}</span><br>
+    		<span class="time-span dark night-dark-time">{{Night | date:"hh':'mm a"}} - 11:59 PM</span>
+    	</span>
+    </div>
+  </ion-content>
+</ion-view>
+
+<!--           $scope.SunsetStart = sunTime.sunsetStart;
+          $scope.Sunset = sunTime.sunset;
+          $scope.Dusk = sunTime.dusk;
+          $scope.NauticalDusk = sunTime.nauticalDusk;
+          $scope.Night = sunTime.night; -->

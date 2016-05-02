@@ -1,0 +1,15 @@
+/* Empty. Add your own CSS if you like */
+.dusky--weak {
+	font-style: italic;
+	color: #999;
+}
+
+.dusky--timeofday {
+	color: #000;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.dusky--ta-c {
+	text-align: center;
+}

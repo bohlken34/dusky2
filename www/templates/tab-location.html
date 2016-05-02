@@ -1,0 +1,10 @@
+<ion-view view-title="Account">
+  <ion-content>
+    <ion-list ng-repeat="location in locations">
+  		<ion-radio on-swipe-right="onSwipeRight()" ng-model="choice" ng-value="'{{ location }}'">{{ location }}</ion-radio>
+	</ion-list>
+	<button class="button button-full button-positive">
+		Save this Location
+	</button>
+  </ion-content>
+</ion-view>
