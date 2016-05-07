@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova', /*'angular-skycons'*/])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova', 'lokijs' /*'angular-skycons'*/])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -209,7 +209,6 @@ SunCalc.getPosition = function(date, lat, lng) {
 };
 
 // sun times configuration (angle, morning name, evening name)
-
 var times = SunCalc.times = [
   [-0.833, 'sunrise', 'sunset'],
   [-0.3, 'sunriseEnd', 'sunsetStart'],
@@ -255,7 +254,7 @@ function getSetJ(h, lw, phi, dec, n, M, L) {
 
 // calculates sun times for a given date and latitude/longitude
 
-SunCalc.getTimes = function(date, lat, lng) {
+/*SunCalc.getTimes = function(date, lat, lng) {
 
   var lw = rad * -lng,
     phi = rad * lat,
@@ -288,6 +287,43 @@ SunCalc.getTimes = function(date, lat, lng) {
   }
 
   return result;
+};*/
+
+// getTimes test
+SunCalc.getTimes = function(date, lat, lng) {
+
+  var lw = rad * -lng,
+    phi = rad * lat,
+
+    d = toDays(date),
+    n = julianCycle(d, lw),
+    ds = approxTransit(0, lw, n),
+
+    M = solarMeanAnomaly(ds),
+    L = eclipticLongitude(M),
+    dec = declination(L, 0),
+
+    Jnoon = solarTransitJ(ds, M, L),
+
+    i, len, time, Jset, Jrise;
+
+  var result = {
+    solarNoon: fromJulian(Jnoon),
+    nadir: fromJulian(Jnoon - 0.5)
+  };
+
+  for (i = 0, len = times.length; i < len; i += 1) {
+    time = times[i];
+
+    Jset = getSetJ(time[0] * rad, lw, phi, dec, n, M, L);
+    Jrise = Jnoon - (Jset - Jnoon);
+
+    result[time[1]] = fromJulian(Jrise);
+    result[time[2]] = fromJulian(Jset);
+  }
+  console.log("result is", result);
+  return result;
+
 };
 
 // moon calculations, based on http://aa.quae.nl/en/reken/hemelpositie.html formulas

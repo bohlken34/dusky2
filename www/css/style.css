@@ -1,15 +1,79 @@
 /* Empty. Add your own CSS if you like */
 .dusky--weak {
 	font-style: italic;
-	color: #999;
+
+	color: #999999;
 }
 
 .dusky--timeofday {
-	color: #000;
-	font-style: normal;
 	font-weight: bold;
+	font-style: normal;
+
+	color: #000000;
 }
 
 .dusky--ta-c {
 	text-align: center;
+}
+
+.dark {
+	background-color: #BFD5DD;
+}
+
+.twilight {
+	background-color: #D0E5FF;
+}
+
+.sunrise {
+	background-color: #FFED9E;
+}
+
+.daylight {
+	background-color: #FFDC9C;
+}
+
+.sunset {
+	background-color: #FFC3AD;
+}
+
+.time-span {
+	display: block;
+
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding: 2px;
+
+	border-radius: 2px;
+}
+
+.hidden {
+	display:none;
+}
+
+#pollution-data {
+	display: block;
+}
+
+.good {
+	background-color: #00E400;
+}
+
+.moderate {
+	background-color: #FFFF00;
+}
+
+.sensitive {
+	background-color: #FF7E00;
+}
+
+.unhealthy {
+	background-color: #FF0000;
+}
+
+.veryunhealthy {
+	background-color: #99004C;
+}
+
+.hazardous {
+	background-color: #7E0023;
 }

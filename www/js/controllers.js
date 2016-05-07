@@ -3,10 +3,42 @@ angular.module('starter.controllers', ['angular-skycons'])
 
 .constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336')
 
-.controller('AddCtrl', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $interval, Weather, $http) {
+.controller('AddCtrl', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService) {
+  var lat, long;
+  var vm = this;
+
+  $scope.addTime = function(angle, riseName, setName) {
+    SunCalc.addTime(angle, riseName, setName);
+  };
 
   ionic.Platform.ready(function(){
-    var lat, long;
+
+    // Initialize the database
+    birthdayService.initDB();
+
+    // Get all birthday records from the database.
+    birthdayService.getAllBirthdays().then(function(birthdays) {
+      vm.birthdays = birthdays;
+      console.log("birthdays", birthdays);
+      SunCalc.insertTimes(birthdays);
+    });
+
+    $scope.birthday = {
+      sunAngle: $scope.sunAngle,
+      riseName: '',
+      setName: ''
+    };
+
+
+
+    $scope.saveBirthday = function() {
+      birthdayService.addBirthday($scope.birthday);
+        $scope.birthday = {
+          sunAngle: '',
+          riseName: '',
+          setName: ''
+        };
+    };
 
     $ionicLoading.show({
             template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Acquiring location!'
@@ -37,8 +69,22 @@ angular.module('starter.controllers', ['angular-skycons'])
 
             $http.get(url + "latitude=" + lat + "&longitude=" + long + "&date=&distance=50&API_KEY=7BCA95CD-4196-4FAB-B72D-F2911D8E4336").success(function(data) {
                 $scope.pollutiondata.currently = data[1];
+                $scope.AQI = $scope.pollutiondata.currently.AQI;
                 $scope.pollutiondata.tomorrow = data[3];
                 console.log('GOT pollutiondata.currently', $scope.pollutiondata);
+                if ($scope.AQI <= 50) {
+                  $('#pollution-data').addClass('good');
+                } else if ($scope.AQI > 50 && $scope.AQI <= 100) {
+                  $('#pollution-data').addClass('moderate');
+                } else if ($scope.AQI > 100 && $scope.AQI <= 150) {
+                  $('#pollution-data').addClass('sensitive');
+                } else if ($scope.AQI > 150 && $scope.AQI <= 200) {
+                  $('#pollution-data').addClass('unhealthy');
+                } else if ($scope.AQI > 200 && $scope.AQI <= 300) {
+                  $('#pollution-data').addClass('veryunhealthy');
+                } else if ($scope.AQI > 300 && $scope.AQI <= 500) {
+                  $('#pollution-data').addClass('hazardous');
+                }
               });
             console.log("Your latitude is " + lat);
             console.log("Your longitude is " + long);  
@@ -107,12 +153,8 @@ angular.module('starter.controllers', ['angular-skycons'])
           $scope.Dusk = sunTime.dusk;
           $scope.NauticalDusk = sunTime.nauticalDusk;
           $scope.Night = sunTime.night;
-          /*  [-0.833, 'sunrise', 'sunset'],
-  [-0.3, 'sunriseEnd', 'sunsetStart'],
-  [-6, 'dawn', 'dusk'], // civil twilight
-  [-12, 'nauticalDawn', 'nauticalDusk'], // nautical twilight
-  [-18, 'nightEnd', 'night'], // astronomical twilight
-  [6, 'goldenHourEnd', 'goldenHour']*/
+          console.log('suntime is ', sunTime);
+
           if($scope.clock < $solarNoon) {
             $('#lbl-morning').addClass('dusky--timeofday');
             $('#lbl-evening').removeClass('dusky--timeofday');
@@ -124,6 +166,7 @@ angular.module('starter.controllers', ['angular-skycons'])
             $('#lbl-evening').addClass('dusky--timeofday');
           }
           $scope.sunAngle = Math.roundspec(currentAltitudeDeg, 2);
+          $scope.birthday.sunAngle = $scope.sunAngle;
         }
         tick();
         $interval(tick, 500);

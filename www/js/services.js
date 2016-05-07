@@ -17,11 +17,116 @@ var forecastioWeather = ['$q', '$resource', '$http', 'FORECASTIO_KEY',
     }
   }];
 
-angular.module('starter.services', ['ngResource'])
+var BirthdayService = ['$q', 'Loki',
+  function BirthdayService($q, Loki) {
+    var _db;
+    var _birthdays;
 
-.factory('Weather', forecastioWeather)
+    function initDB() {
+      var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+      _db = new Loki('birthdaysDB',
+      {
+        autosave: true,
+        autosaveInterval: 1000,
+        adapter: adapter
+      });
+    };
 
-.factory('Pollution', function(lat, lng, $http, AIRNOWAPI_KEY) {
+    function getAllBirthdays() {
+
+      return $q(function(resolve, reject) {
+        
+        var options = {
+          proto: Object,
+          inflate: function(src, dst) {
+            var prop;
+            for (prop in src) {
+              if (prop === 'Date') {
+                dst.Date = new Date(src.Date);
+              } else {
+                dst[prop] = src[prop];
+              }
+            }
+          }
+        };
+
+        _db.loadDatabase(options, function() {
+          _birthdays = _db.getCollection('birthdays');
+
+          if (!_birthdays) {
+            console.log('NO BIRTHDAYS IN DATABASE!');
+            _birthdays = _db.addCollection('birthdays');
+
+            _birthdays.insert({
+              riseName: 'sunrise',
+              setName: 'sunset',
+              sunAngle: -0.833
+            });
+            _birthdays.insert({
+              riseName: 'sunriseEnd',
+              setName: 'sunsetStart',
+              sunAngle: -0.3
+            });
+            _birthdays.insert({
+              riseName: 'dawn',
+              setName: 'dusk',
+              sunAngle: -6
+            });
+            _birthdays.insert({
+              riseName: 'nauticalDawn',
+              setName: 'nauticalDusk',
+              sunAngle: -12
+            });
+            _birthdays.insert({
+              riseName: 'nightEnd',
+              setName: 'night',
+              sunAngle: -18
+            });
+            _birthdays.insert({
+              riseName: 'goldenHourEnd',
+              setName: 'goldenHour',
+              sunAngle: 6
+            });
+          }
+
+          resolve(_birthdays.data);
+          console.log('The real value of birthdays is: ', _birthdays.data);
+        });
+      });
+    };
+
+    
+
+    function addBirthday(birthday) {
+      _birthdays.insert(birthday);
+      console.log('ADD The real value of birthdays is: ', _birthdays.data);
+    };
+
+    function updateBirthday(birthday) {
+      _birthdays.update(birthday);
+    };
+
+    function deleteBirthday(birthday) {
+      _birthdays.remove(birthday);
+    };
+
+    return {
+      initDB: initDB,
+      getAllBirthdays: getAllBirthdays,
+      addBirthday: addBirthday,
+      updateBirthday: updateBirthday,
+      deleteBirthday: deleteBirthday
+    };
+  }
+];
+
+var app = angular.module('starter.services', ['ngResource']);
+
+app.factory('Weather', forecastioWeather);
+// Create database service
+app.factory('birthdayService', BirthdayService);
+
+app.factory('Pollution', function(lat, lng, $http, AIRNOWAPI_KEY) {
   var url = "http://www.airnowapi.org/aq/forecast/latLong/?format=application/json&";
   var pollutiondata = {content:null};
 
@@ -31,9 +136,11 @@ angular.module('starter.services', ['ngResource'])
       return obj;
     });
   }
-})
+});
 
-.factory('Chats', function() {
+
+
+app.factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
