@@ -14,7 +14,6 @@
     	<p>The Air Quality Index is currently <span id="pollution-data" class="large">{{ pollutiondata.currently.AQI }}</span></p>
     </div>
     <form name="lightNote">
-        <input type="text" ng-model="birthday.sunAngle" value="{{ sunAngle }}" placeholder="{{ sunAngle }}" required />
     	<input type="text" ng-model="birthday.riseName" placeholder="Rise Name" required />
     	<input type="text" ng-model="birthday.setName" placeholder="Set Name" required />
     	<button class="button button-full button-positive" type="submit" ng-click="saveBirthday()">Add Time</button>

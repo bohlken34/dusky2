@@ -4,7 +4,8 @@ angular.module('starter.controllers', ['angular-skycons'])
 .constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336')
 
 .controller('AddCtrl', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService) {
-  var lat, long;
+  var lat, long, sunTime, $solarNoon;
+  var today = new Date();
   var vm = this;
 
   $scope.addTime = function(angle, riseName, setName) {
@@ -20,7 +21,8 @@ angular.module('starter.controllers', ['angular-skycons'])
     birthdayService.getAllBirthdays().then(function(birthdays) {
       vm.birthdays = birthdays;
       console.log("birthdays", birthdays);
-      SunCalc.insertTimes(birthdays);
+      SunCalc.timesData(birthdays);
+      SunCalc.getTimes(today, lat, long);
     });
 
     $scope.birthday = {
@@ -33,6 +35,9 @@ angular.module('starter.controllers', ['angular-skycons'])
 
     $scope.saveBirthday = function() {
       birthdayService.addBirthday($scope.birthday);
+        SunCalc.timesData(vm.birthdays);
+        SunCalc.getTimes(today, lat, long);
+        console.log('result in controller', SunCalc.getTimes(today, lat, long));
         $scope.birthday = {
           sunAngle: '',
           riseName: '',
@@ -53,7 +58,22 @@ angular.module('starter.controllers', ['angular-skycons'])
         $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
             lat  = position.coords.latitude;
             long = position.coords.longitude;
+            var sunTime = SunCalc.getTimes(today, lat, long);
+            var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
             
+            console.log("Suntime is: ", sunTime);
+
+            $scope.MorningAstroTwilight = sunTime.nightEnd;
+            $scope.NauticalDawn = sunTime.nauticalDawn;
+            $scope.Dawn = sunTime.dawn;
+            $scope.Sunrise = sunTime.sunrise;
+            $scope.SunriseEnd = sunTime.sunriseEnd;
+            $scope.SunsetStart = sunTime.sunsetStart;
+            $scope.Sunset = sunTime.sunset;
+            $scope.Dusk = sunTime.dusk;
+            $scope.NauticalDusk = sunTime.nauticalDusk;
+            $scope.Night = sunTime.night;
+
             initMap();
 
             Weather.getCurrentWeather(lat,long).then(function(resp) {
@@ -86,8 +106,7 @@ angular.module('starter.controllers', ['angular-skycons'])
                   $('#pollution-data').addClass('hazardous');
                 }
               });
-            console.log("Your latitude is " + lat);
-            console.log("Your longitude is " + long);  
+ 
             $ionicLoading.hide();           
              
         }, function(err) {
@@ -136,24 +155,12 @@ angular.module('starter.controllers', ['angular-skycons'])
           });
         }
 
+        // Rewrite this
+
         var tick = function() {
           $scope.clock = Date.now();
           var currentSunPosition = SunCalc.getPosition($scope.clock, lat, long);
-          var sunTime = SunCalc.getTimes($scope.clock, lat, long);
           var currentAltitudeDeg = Math.degrees(currentSunPosition.altitude);
-
-          var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
-          $scope.MorningAstroTwilight = sunTime.nightEnd;
-          $scope.NauticalDawn = sunTime.nauticalDawn;
-          $scope.Dawn = sunTime.dawn;
-          $scope.Sunrise = sunTime.sunrise;
-          $scope.SunriseEnd = sunTime.sunriseEnd;
-          $scope.SunsetStart = sunTime.sunsetStart;
-          $scope.Sunset = sunTime.sunset;
-          $scope.Dusk = sunTime.dusk;
-          $scope.NauticalDusk = sunTime.nauticalDusk;
-          $scope.Night = sunTime.night;
-          console.log('suntime is ', sunTime);
 
           if($scope.clock < $solarNoon) {
             $('#lbl-morning').addClass('dusky--timeofday');

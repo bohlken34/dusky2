@@ -208,7 +208,7 @@ SunCalc.getPosition = function(date, lat, lng) {
   };
 };
 
-// sun times configuration (angle, morning name, evening name)
+// initial sun times configuration (angle, morning name, evening name)
 var times = SunCalc.times = [
   {
     sunAngle: -0.833,
@@ -242,14 +242,10 @@ var times = SunCalc.times = [
   }
 ];
 
-/*var times = SunCalc.times = [
-  [-0.833, 'sunrise', 'sunset'],
-  [-0.3, 'sunriseEnd', 'sunsetStart'],
-  [-6, 'dawn', 'dusk'], // civil twilight
-  [-12, 'nauticalDawn', 'nauticalDusk'], // nautical twilight
-  [-18, 'nightEnd', 'night'], // astronomical twilight
-  [6, 'goldenHourEnd', 'goldenHour']
-];*/
+SunCalc.timesData = function(data) {
+  times = data; // set times array equal to database data
+  SunCalc.times = times;
+};
 
 // adds a custom time to the times config
 
@@ -287,42 +283,6 @@ function getSetJ(h, lw, phi, dec, n, M, L) {
 
 // calculates sun times for a given date and latitude/longitude
 
-/*SunCalc.getTimes = function(date, lat, lng) {
-
-  var lw = rad * -lng,
-    phi = rad * lat,
-
-    d = toDays(date),
-    n = julianCycle(d, lw),
-    ds = approxTransit(0, lw, n),
-
-    M = solarMeanAnomaly(ds),
-    L = eclipticLongitude(M),
-    dec = declination(L, 0),
-
-    Jnoon = solarTransitJ(ds, M, L),
-
-    i, len, time, Jset, Jrise;
-
-  var result = {
-    solarNoon: fromJulian(Jnoon),
-    nadir: fromJulian(Jnoon - 0.5)
-  };
-
-  for (i = 0, len = times.length; i < len; i += 1) {
-    time = times[i];
-
-    Jset = getSetJ(time[0] * rad, lw, phi, dec, n, M, L);
-    Jrise = Jnoon - (Jset - Jnoon);
-
-    result[time[1]] = fromJulian(Jrise);
-    result[time[2]] = fromJulian(Jset);
-  }
-
-  return result;
-};*/
-
-// getTimes test
 SunCalc.getTimes = function(date, lat, lng) {
 
   var lw = rad * -lng,
