@@ -63,6 +63,7 @@ angular.module('starter.controllers', ['angular-skycons'])
             
             console.log("Suntime is: ", sunTime);
 
+            $scope.sunTimes = sunTime;
             $scope.MorningAstroTwilight = sunTime.nightEnd;
             $scope.NauticalDawn = sunTime.nauticalDawn;
             $scope.Dawn = sunTime.dawn;

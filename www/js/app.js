@@ -304,6 +304,7 @@ SunCalc.getTimes = function(date, lat, lng) {
     solarNoon: fromJulian(Jnoon),
     nadir: fromJulian(Jnoon - 0.5)
   };
+  var resultArr = [];
 
   for (i = 0, len = times.length; i < len; i += 1) {
     time = times[i];
@@ -313,7 +314,16 @@ SunCalc.getTimes = function(date, lat, lng) {
 
     result[time.riseName] = fromJulian(Jrise);
     result[time.setName] = fromJulian(Jset);
+    var obj = {
+      sunAngle: time.sunAngle,
+      riseName: time.riseName,
+      riseTime: result[time.riseName],
+      setName: time.setName,
+      setTime: result[time.setName]
+    };
+    resultArr.push(obj); 
   }
+  console.log("resultArr is", resultArr);
   console.log("result is", result);
   return result;
 
