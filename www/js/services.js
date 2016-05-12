@@ -120,7 +120,25 @@ var BirthdayService = ['$q', 'Loki',
   }
 ];
 
-var app = angular.module('starter.services', ['ngResource']);
+var app = angular.module('starter.services', ['ngResource', 'ngCordova']);
+
+app.factory('GeoService', function($ionicPlatform, $cordovaGeolocation) {
+
+  var positionOptions = {
+    timout: 20000,
+    enableHighAccuracy: true,
+    maximumAge: 0
+  };
+
+  return {
+    getPosition: function() {
+      return $ionicPlatform.ready().then(function() {
+        return $cordovaGeolocation.getCurrentPosition(positionOptions);
+      })
+    }
+  };
+
+});
 
 app.factory('Weather', forecastioWeather);
 // Create database service

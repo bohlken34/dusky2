@@ -1,29 +1,17 @@
-angular.module('starter.controllers', ['angular-skycons'])
-.constant('FORECASTIO_KEY', 'bfada7e322068f55ccbb16681e23d008')
+angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
+.constant('FORECASTIO_KEY', 'bfada7e322068f55ccbb16681e23d008') // Forecast.io API key
 
-.constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336')
+.constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336') // AirNow API key
 
-.controller('AddCtrl', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService) {
+.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService) {
   var lat, long, sunTime, $solarNoon;
   var today = new Date();
   var vm = this;
 
-  $scope.addTime = function(angle, riseName, setName) {
-    SunCalc.addTime(angle, riseName, setName);
-  };
-
-  ionic.Platform.ready(function(){
+  ionic.Platform.ready(function(){ // Waits for Ionic to load
 
     // Initialize the database
     birthdayService.initDB();
-
-    // Get all birthday records from the database.
-    birthdayService.getAllBirthdays().then(function(birthdays) {
-      vm.birthdays = birthdays;
-      console.log("birthdays", birthdays);
-      SunCalc.timesData(birthdays);
-      SunCalc.getTimes(today, lat, long);
-    });
 
     $scope.birthday = {
       sunAngle: $scope.sunAngle,
@@ -31,14 +19,12 @@ angular.module('starter.controllers', ['angular-skycons'])
       setName: ''
     };
 
-
-
-    $scope.saveBirthday = function() {
+    $scope.saveBirthday = function() { // Adds birthday to database
       birthdayService.addBirthday($scope.birthday);
-        SunCalc.timesData(vm.birthdays);
+        SunCalc.timesData(vm.birthdays); // Passes database into app to use in getTimes()
         SunCalc.getTimes(today, lat, long);
-        console.log('result in controller', SunCalc.getTimes(today, lat, long));
-        $scope.birthday = {
+
+        $scope.birthday = { // Reset birthday object to empty
           sunAngle: '',
           riseName: '',
           setName: ''
@@ -55,25 +41,33 @@ angular.module('starter.controllers', ['angular-skycons'])
             maximumAge: 0
         };
 
-        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+        //$cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+          GeoService.getPosition().then(function(position) {
             lat  = position.coords.latitude;
             long = position.coords.longitude;
+
             var sunTime = SunCalc.getTimes(today, lat, long);
             var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
             
-            console.log("Suntime is: ", sunTime);
+            // Get all birthday records from the database.
+            birthdayService.getAllBirthdays().then(function(birthdays) {
+              vm.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
+              SunCalc.timesData(birthdays);
+              SunCalc.getTimes(today, lat, long);
+            });
 
+            // Mess of times
             $scope.sunTimes = sunTime;
-            $scope.MorningAstroTwilight = sunTime.nightEnd;
-            $scope.NauticalDawn = sunTime.nauticalDawn;
-            $scope.Dawn = sunTime.dawn;
-            $scope.Sunrise = sunTime.sunrise;
-            $scope.SunriseEnd = sunTime.sunriseEnd;
-            $scope.SunsetStart = sunTime.sunsetStart;
-            $scope.Sunset = sunTime.sunset;
-            $scope.Dusk = sunTime.dusk;
-            $scope.NauticalDusk = sunTime.nauticalDusk;
-            $scope.Night = sunTime.night;
+            $scope.MorningAstroTwilight = sunTime[5].riseTime;
+            $scope.NauticalDawn = sunTime[4].riseTime;
+            $scope.Dawn = sunTime[3].riseTime;
+            $scope.Sunrise = sunTime[1].riseTime;
+            $scope.SunriseEnd = sunTime[2].riseTime;
+            $scope.SunsetStart = sunTime[2].setTime;
+            $scope.Sunset = sunTime[1].setTime;
+            $scope.Dusk = sunTime[3].setTime;
+            $scope.NauticalDusk = sunTime[4].setTime;
+            $scope.Night = sunTime[5].riseTime;
 
             initMap();
 
@@ -182,7 +176,7 @@ angular.module('starter.controllers', ['angular-skycons'])
   
 })
 
-.controller('CalendarCtrl', function($scope, Chats) {
+.controller('CalendarCtrl', function($scope, birthdayService, GeoService) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -190,11 +184,38 @@ angular.module('starter.controllers', ['angular-skycons'])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+  var lat, long, sunTime;
+  var today = new Date();
+  var vm = this;
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+  $scope.sunTime = [];
+
+  $scope.onezoneDatepicker = {
+    date: today, // MANDATORY
+    mondayFirst: false,
+    disablePastDays: true,
+    disableSwipe: false,
+    showDatepicker: true,
+    showTodayButton: true,
+    calendarMode: true,
+    hideCancelButton: false,
+    hideSetButton: false,
   };
+
+  GeoService.getPosition().then(function(position) {
+    lat  = position.coords.latitude;
+    long = position.coords.longitude;
+
+    $scope.sunTime = SunCalc.getTimes(today, lat, long);
+    console.log("SunTime Is: ", $scope.sunTime);
+
+  });
+
+  $scope.$watch('onezoneDatepicker.date', function() {
+    $scope.sunTime = SunCalc.getTimes($scope.onezoneDatepicker.date.getTime() + 86400000, lat, long);
+    console.log("SunTime has been updated to ", $scope.sunTime);
+  });
+
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
