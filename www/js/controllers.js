@@ -3,7 +3,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
 .constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336') // AirNow API key
 
-.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService) {
+.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService, CameraService) {
   var lat, long, sunTime, $solarNoon;
   var today = new Date();
   var vm = this;
@@ -14,9 +14,16 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
     birthdayService.initDB();
 
     $scope.birthday = {
+      originalDate: today,
       sunAngle: $scope.sunAngle,
       riseName: '',
-      setName: ''
+      setName: '',
+    };
+    
+    $scope.takePicture = function() {
+      CameraService.getPicture().then(function(photo){
+        $scope.birthday.photo = photo;
+      });
     };
 
     $scope.saveBirthday = function() { // Adds birthday to database
@@ -40,11 +47,10 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             timeout: 20000,
             maximumAge: 0
         };
-
         //$cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
           GeoService.getPosition().then(function(position) {
-            lat  = position.coords.latitude;
-            long = position.coords.longitude;
+            lat  = $scope.birthday.originalLat = position.coords.latitude;
+            long = $scope.birthday.originalLong = position.coords.longitude;
 
             var sunTime = SunCalc.getTimes(today, lat, long);
             var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
@@ -73,6 +79,9 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
             Weather.getCurrentWeather(lat,long).then(function(resp) {
               $scope.current = resp.data;
+              $scope.birthday.weatherSummary = $scope.current.currently.summary;
+              $scope.birthday.weatherIcon = $scope.current.currently.icon;
+              $scope.birthday.weather = $scope.current.currently;
               console.log('GOT CURRENT', $scope.current);
             }, function(error) {
               alert('Unable to get current conditions');
@@ -84,7 +93,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
             $http.get(url + "latitude=" + lat + "&longitude=" + long + "&date=&distance=50&API_KEY=7BCA95CD-4196-4FAB-B72D-F2911D8E4336").success(function(data) {
                 $scope.pollutiondata.currently = data[1];
-                $scope.AQI = $scope.pollutiondata.currently.AQI;
+                $scope.AQI = $scope.birthday.AQI = $scope.pollutiondata.currently.AQI;
                 $scope.pollutiondata.tomorrow = data[3];
                 console.log('GOT pollutiondata.currently', $scope.pollutiondata);
                 if ($scope.AQI <= 50) {
@@ -124,7 +133,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
           geocoder.geocode({'location': latlng}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
               if (results[0]) {
-                $scope.city = results[0].formatted_address;
+                $scope.city = $scope.birthday.address = results[0].formatted_address;
               } else {
                 window.alert('Could not detect address');
               }
@@ -176,7 +185,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
   
 })
 
-.controller('CalendarCtrl', function($scope, birthdayService, GeoService) {
+.controller('CalendarCtrl', function($scope, $ionicModal, birthdayService, GeoService, CameraService) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -202,13 +211,28 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
     hideSetButton: false,
   };
 
+  $scope.viewImage = function(image){
+    $scope.birthday.photo = image;
+  };
+
   GeoService.getPosition().then(function(position) {
     lat  = position.coords.latitude;
     long = position.coords.longitude;
 
+
     $scope.sunTime = SunCalc.getTimes(today, lat, long);
     console.log("SunTime Is: ", $scope.sunTime);
 
+  });
+
+  $scope.$on('$ionicView.beforeEnter', function() {
+
+      birthdayService.getAllBirthdays().then(function(birthdays) {
+        vm.birthdays = $scope.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
+        SunCalc.timesData(birthdays);
+        $scope.sunTime = SunCalc.getTimes(today, lat, long);
+        console.log('The MANAGE view has been entered. \n $scope.sunTime is now: ', $scope.sunTime);
+      }); 
   });
 
   $scope.$watch('onezoneDatepicker.date', function() {
@@ -216,16 +240,80 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
     console.log("SunTime has been updated to ", $scope.sunTime);
   });
 
+  $ionicModal.fromTemplateUrl('my-modal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+  $scope.openModal = function(times) {
+    $scope.time = times;
+    console.log("scope.time = ", $scope.time);
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // action
+  });
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('ManageCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+.controller('ManageCtrl', function($scope, birthdayService) {
+  $scope.shouldShowReorder = false;
+  $scope.shouldShowDelete = true;
+
+  ionic.Platform.ready(function(){
+    var vm = this;
+    // Initialize the database
+    birthdayService.initDB();
+
+    // Get all birthday records from the database.
+    $scope.$on('$ionicView.beforeEnter', function() {
+
+      birthdayService.getAllBirthdays().then(function(birthdays) {
+        vm.birthdays = $scope.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
+        SunCalc.timesData(birthdays);
+      });
+      console.log('The MANAGE view has been entered. \n $scope.birthdays is now: ', $scope.birthdays);
+    });
+
+    $scope.moveItem = function(item, fromIndex, toIndex) {
+      console.log("item is ", item);
+      console.log("fromIndex is ", fromIndex);
+      console.log("toIndex is ", toIndex);
+      $scope.birthdays.splice(fromIndex, 1);
+      $scope.birthdays.splice(toIndex, 0, item);
+      console.log($scope.birthdays);
+      $scope.updateBirthday();
+    };
+  
+    $scope.updateBirthday = function() { // Adds birthday to database
+      birthdayService.updateBirthday($scope.birthdays);
+        SunCalc.timesData(vm.birthdays); // Passes database into app to use in getTimes()
+    };
+
+    $scope.onItemDelete = function(item) {
+      $scope.birthdays.slice($scope.birthdays.indexOf(item), 1);
+      console.log("Deleted item! Scope.Birthdays = ", $scope.birthdays);
+      birthdayService.deleteBirthday(item);
+        SunCalc.timesData(vm.birthdays);
+    };
+
+  });
 })
 
 .controller('LocationCtrl', function($scope) {

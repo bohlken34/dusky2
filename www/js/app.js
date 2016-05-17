@@ -318,16 +318,24 @@ SunCalc.getTimes = function(date, lat, lng) {
     result[time.riseName] = fromJulian(Jrise);
     result[time.setName] = fromJulian(Jset);
     var obj = {
+      AQI: time.AQI,
+      address: time.address,
+      originalDate: time.originalDate,
+      originalLat: time.originalLat,
+      originalLong: time.originalLong,
       sunAngle: time.sunAngle,
       riseName: time.riseName,
       riseTime: result[time.riseName],
       setName: time.setName,
       setTime: result[time.setName],
+      weather: time.weather,
+      weatherIcon: time.weatherIcon,
+      weatherSummary: time.weatherSummary,
+      description: time.description
     };
     resultArr.push(obj); 
   }
-  console.log("resultArr is", resultArr);
-  console.log("result is", result);
+  console.log("The times that SunCalc.GetTimes returns are: ", resultArr);
   return resultArr;
 
 };

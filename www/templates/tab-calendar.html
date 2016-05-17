@@ -1,11 +1,11 @@
 <ion-view view-title="Chats">
   <ion-content>
     <onezone-datepicker datepicker-object="onezoneDatepicker"></onezone-datepicker>
-    <ul class="list">
-      <li class="item" ng-repeat="time in sunTime">
-        <p>{{time.riseName}}&nbsp{{time.riseTime | date:"hh':'mm a"}}</p>
-        <p>{{time.setName}}&nbsp{{time.setTime | date:"hh':'mm a"}}</p>
-      </li>
-    </ul>
+    <div class="list">
+      <a class="item" ng-repeat="time in sunTime" ng-click="openModal(time)" ng-hide="$first">
+        <i class="icon ion-up-arrow-a"></i><p>{{time.riseName}}&nbsp{{time.riseTime | date:"hh':'mm a"}}</p>
+        <i class="icon ion-down-arrow-a"></i><p>{{time.setName}}&nbsp{{time.setTime | date:"hh':'mm a"}}</p>
+      </a>
+    </div>
   </ion-content>
 </ion-view>

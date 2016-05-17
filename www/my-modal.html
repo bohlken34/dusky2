@@ -1,0 +1,30 @@
+<ion-modal-view>
+	<ion-header-bar class="bar bar-header bar-positive">
+		<h1 class="title">Angle Details</h1>
+		<button class="button button-clear button-primary" ng-click="modal.hide()">Back</button>
+	</ion-header-bar>
+	<ion-content>
+		<h4>Details for {{time.riseName}}/{{time.setName}}:</h4>
+		<div class="list">
+
+			<div class="item item-divider">
+				Data for {{onezoneDatepicker.date | date:"MMMM d', 'yyyy"}}
+			</div>
+
+			<p class="item item-text-wrap">Sun Angle: {{time.sunAngle}}&deg</p>
+			<p class="item item-text-wrap">Rise Time: {{time.riseTime | date:"hh':'mm a"}}</p>
+			<p class="item item-text-wrap">Set Time: {{time.setTime | date:"hh':'mm a"}}</p>
+
+			<div class="item item-divider">
+				Original Details
+			</div>
+			<p ng-if="time.originalDate == undefined" class="item italic">This is a default saved time.</p>
+			<p ng-if="time.originalDate !== undefined" class="item item-text-wrap">Date Added: {{time.originalDate | date:"MMMM d', 'yyyy hh':'mm a"}}</p>
+			<p ng-if="time.address !== undefined" class="item item-text-wrap">Location: {{time.address}}</p>
+			<p ng-if="time.originalLat !== undefined" class="item item-text-wrap">Latitude: {{time.originalLat}}</p>
+			<p ng-if="time.originalLong !== undefined" class="item item-text-wrap">Longitude: {{time.originalLong}}</p>
+			<p ng-if="time.weatherSummary !== undefined" class="item item-text-wrap">Weather: {{time.weatherSummary}} <skycon icon="time.weatherIcon" id="detail-weather-icon"></skycon></p>
+			<p ng-if="time.description !== undefined" class="item item-text-wrap">Description: {{time.description}}</p>
+		</div>
+	</ion-content>
+</ion-modal-view>

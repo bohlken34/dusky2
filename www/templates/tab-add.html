@@ -14,9 +14,21 @@
     	<p>The Air Quality Index is currently <span id="pollution-data" class="large">{{ pollutiondata.currently.AQI }}</span></p>
     </div>
     <form name="lightNote">
-    	<input type="text" ng-model="birthday.riseName" placeholder="Rise Name" required />
-    	<input type="text" ng-model="birthday.setName" placeholder="Set Name" required />
-    	<button class="button button-full button-positive" type="submit" ng-click="saveBirthday()">Add Time</button>
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label"><i class="icon ion-arrow-up-a"></i> Rise Name</span>
+        	    <input type="text" ng-model="birthday.riseName" required />
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><i class="icon ion-arrow-down-a"></i> Set Name</span>
+        	    <input type="text" ng-model="birthday.setName" required />
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Description (optional)</span>
+                <input type="text" ng-model="birthday.description" />
+            </label>
+        	<button class="button button-full button-positive" type="submit" ng-click="saveBirthday()">Add Time</button>
+        </div>
     </form>
     <div class="row" id="legend">
     	<div class="col" id="before-sunrise">

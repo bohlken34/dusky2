@@ -60,7 +60,7 @@ var BirthdayService = ['$q', 'Loki',
             _birthdays.insert({
               riseName: 'sunrise',
               setName: 'sunset',
-              sunAngle: -0.833
+              sunAngle: -0.833,
             });
             _birthdays.insert({
               riseName: 'sunriseEnd',
@@ -90,7 +90,7 @@ var BirthdayService = ['$q', 'Loki',
           }
 
           resolve(_birthdays.data);
-          console.log('The real value of birthdays is: ', _birthdays.data);
+          console.log('GET action! The database contains: ', _birthdays.data);
         });
       });
     };
@@ -99,15 +99,17 @@ var BirthdayService = ['$q', 'Loki',
 
     function addBirthday(birthday) {
       _birthdays.insert(birthday);
-      console.log('ADD The real value of birthdays is: ', _birthdays.data);
+      console.log('ADD action! The database now contains: ', _birthdays.data);
     };
 
     function updateBirthday(birthday) {
       _birthdays.update(birthday);
+      console.log('UPDATE action! The database now contains: ', _birthdays.data);
     };
 
     function deleteBirthday(birthday) {
       _birthdays.remove(birthday);
+      console.log('DELETE action! The database now contains: ', _birthdays.data);
     };
 
     return {
@@ -156,7 +158,41 @@ app.factory('Pollution', function(lat, lng, $http, AIRNOWAPI_KEY) {
   }
 });
 
+app.service('CameraService', ['$q', CameraService]);
 
+function CameraService($q) {
+
+  var me = this;
+
+  me.options = {
+    quality: 80,
+    correctOrientation: true
+  };
+
+  function getPicture() {
+
+    var q = $q.defer();
+
+    me.options.encodingType = Camera.EncodingType.JPEG;
+    me.options.sourceType = Camera.PictureSourceType.CAMERA;
+
+    navigator.camera.getPicture(
+      function(result){
+        q.resolve(result);
+      },
+      function(err){
+        q.reject(err);
+      },
+      me.options
+    );
+
+    return q.promise;
+  }
+
+  return {
+    getPicture: getPicture
+  }
+};
 
 app.factory('Chats', function() {
   // Might use a resource here that returns a JSON array

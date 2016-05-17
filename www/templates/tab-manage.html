@@ -1,9 +1,13 @@
 <ion-view view-title="Account">
   <ion-content>
-    <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
+    <ion-list show-reorder="shouldShowReorder" show-delete="shouldShowDelete">
+	    <ion-item ng-repeat="item in birthdays" item="item" class="item-remove-animate">
+			<i class="icon ion-up-arrow-a"></i><p>{{item.riseName}}&nbsp{{item.riseTime | date:"hh':'mm a"}}</p>
+        	<i class="icon ion-down-arrow-a"></i><p>{{item.setName}}&nbsp{{item.setTime | date:"hh':'mm a"}}</p>
+			
+			<ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(item)"></ion-delete-button>
+			<ion-reorder-button class="ion-navicon" on-reorder="moveItem(time, $fromIndex, $toIndex)"></ion-reorder-button>
+	    </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>

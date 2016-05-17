@@ -47,13 +47,16 @@
 }
 
 .hidden {
-	display:none;
+	display: none;
 }
 
 #pollution-data {
 	display: block;
 }
-
+#detail-weather-icon canvas {
+	width: 16px;
+	height: 16px;
+}
 .good {
 	background-color: #00E400;
 }
@@ -76,4 +79,7 @@
 
 .hazardous {
 	background-color: #7E0023;
+}
+.italic {
+	font-style:italic;
 }
