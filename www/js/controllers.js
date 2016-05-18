@@ -3,7 +3,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
 .constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336') // AirNow API key
 
-.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService, CameraService) {
+.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService, CameraService, Location) {
   var lat, long, sunTime, $solarNoon;
   var today = new Date();
   var vm = this;
@@ -51,6 +51,12 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
           GeoService.getPosition().then(function(position) {
             lat  = $scope.birthday.originalLat = position.coords.latitude;
             long = $scope.birthday.originalLong = position.coords.longitude;
+
+            $scope.location = Location;
+            $scope.location.latitude = lat;
+            $scope.location.longitude = long;
+
+            console.log("LOCATION", Location);
 
             var sunTime = SunCalc.getTimes(today, lat, long);
             var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
@@ -185,7 +191,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
   
 })
 
-.controller('CalendarCtrl', function($scope, $ionicModal, birthdayService, GeoService, CameraService) {
+.controller('CalendarCtrl', function($scope, $ionicModal, birthdayService, GeoService, CameraService, Location) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -215,7 +221,12 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
     $scope.birthday.photo = image;
   };
 
-  GeoService.getPosition().then(function(position) {
+  $scope.location = Location;
+
+  $scope.sunTime = SunCalc.getTimes(today, Location.latitude, Location.longitude);
+  console.log("CALENDAR - SUNTIME IS: ", $scope.sunTime);
+
+ /* GeoService.getPosition().then(function(position) {
     lat  = position.coords.latitude;
     long = position.coords.longitude;
 
@@ -223,20 +234,20 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
     $scope.sunTime = SunCalc.getTimes(today, lat, long);
     console.log("SunTime Is: ", $scope.sunTime);
 
-  });
+  });*/
 
   $scope.$on('$ionicView.beforeEnter', function() {
 
       birthdayService.getAllBirthdays().then(function(birthdays) {
         vm.birthdays = $scope.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
         SunCalc.timesData(birthdays);
-        $scope.sunTime = SunCalc.getTimes(today, lat, long);
+        $scope.sunTime = SunCalc.getTimes(today, Location.latitude, Location.longitude);
         console.log('The MANAGE view has been entered. \n $scope.sunTime is now: ', $scope.sunTime);
       }); 
   });
 
   $scope.$watch('onezoneDatepicker.date', function() {
-    $scope.sunTime = SunCalc.getTimes($scope.onezoneDatepicker.date.getTime() + 86400000, lat, long);
+    $scope.sunTime = SunCalc.getTimes($scope.onezoneDatepicker.date.getTime() + 86400000, Location.latitude, Location.longitude);
     console.log("SunTime has been updated to ", $scope.sunTime);
   });
 
@@ -290,6 +301,19 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
       });
       console.log('The MANAGE view has been entered. \n $scope.birthdays is now: ', $scope.birthdays);
     });
+
+    $scope.editDefaults = {
+      checked: false,
+      show: 6
+    };
+
+    $scope.handleDefaults = function(checked) {
+      if(checked == true) {
+        $scope.editDefaults.show = 0;
+      } else {
+        $scope.editDefaults.show = 6;
+      };
+    };
 
     $scope.moveItem = function(item, fromIndex, toIndex) {
       console.log("item is ", item);

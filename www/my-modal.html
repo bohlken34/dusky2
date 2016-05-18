@@ -4,9 +4,10 @@
 		<button class="button button-clear button-primary" ng-click="modal.hide()">Back</button>
 	</ion-header-bar>
 	<ion-content>
-		<h4>Details for {{time.riseName}}/{{time.setName}}:</h4>
 		<div class="list">
-
+			<div class="item item-divider">
+				Details for {{time.riseName}}/{{time.setName}}:
+			</div>
 			<div class="item item-divider">
 				Data for {{onezoneDatepicker.date | date:"MMMM d', 'yyyy"}}
 			</div>

@@ -1,12 +1,12 @@
-<ion-view view-title="Account">
+<ion-view view-title="Manage Times">
   <ion-content>
-    <ion-list show-reorder="shouldShowReorder" show-delete="shouldShowDelete">
-	    <ion-item ng-repeat="item in birthdays" item="item" class="item-remove-animate">
+    <ion-list show-reorder="shouldShowReorder" show-delete="true">
+    	<ion-toggle toggle-class="toggle-positive" ng-change="handleDefaults(editDefaults.checked)" ng-model="editDefaults.checked">Show defaults? {{editDefaults.checked}}, {{editDefaults.show}}</ion-toggle>
+	    <ion-item ng-repeat="item in birthdays" item="item" class="item-remove-animate" ng-if="$index >= editDefaults.show">
 			<i class="icon ion-up-arrow-a"></i><p>{{item.riseName}}&nbsp{{item.riseTime | date:"hh':'mm a"}}</p>
         	<i class="icon ion-down-arrow-a"></i><p>{{item.setName}}&nbsp{{item.setTime | date:"hh':'mm a"}}</p>
 			
-			<ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(item)"></ion-delete-button>
-			<ion-reorder-button class="ion-navicon" on-reorder="moveItem(time, $fromIndex, $toIndex)"></ion-reorder-button>
+			<ion-delete-button class="ion-minus-circled item-remove-animate" ng-click="onItemDelete(item)" ng-if="$index >= 6"></ion-delete-button>
 	    </ion-item>
     </ion-list>
   </ion-content>

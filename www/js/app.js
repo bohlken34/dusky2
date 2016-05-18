@@ -59,15 +59,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       }
     })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
 
   .state('tab.manage', {
     url: '/manage',
@@ -79,7 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('tab.location', {
+  /*.state('tab.location', {
     url: '/location',
     views: {
       'tab-location': {
@@ -87,7 +78,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         controller: 'LocationCtrl'
       }
     }
-  });
+  });*/
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/add');

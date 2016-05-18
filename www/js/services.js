@@ -124,6 +124,13 @@ var BirthdayService = ['$q', 'Loki',
 
 var app = angular.module('starter.services', ['ngResource', 'ngCordova']);
 
+app.factory('Location', function() {
+  return {
+    latitude: '',
+    longitude: ''
+  };
+});
+
 app.factory('GeoService', function($ionicPlatform, $cordovaGeolocation) {
 
   var positionOptions = {
