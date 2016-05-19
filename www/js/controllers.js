@@ -66,6 +66,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
               vm.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
               SunCalc.timesData(birthdays);
               SunCalc.getTimes(today, lat, long);
+              console.log("GOT ALL BIRTHDAYS");
             });
 
             // Mess of times
@@ -88,7 +89,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
               $scope.birthday.weatherSummary = $scope.current.currently.summary;
               $scope.birthday.weatherIcon = $scope.current.currently.icon;
               $scope.birthday.weather = $scope.current.currently;
-              console.log('GOT CURRENT', $scope.current);
+              console.log('CURRENT WEATHER', $scope.current);
             }, function(error) {
               alert('Unable to get current conditions');
               console.error(error);
@@ -101,7 +102,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
                 $scope.pollutiondata.currently = data[1];
                 $scope.AQI = $scope.birthday.AQI = $scope.pollutiondata.currently.AQI;
                 $scope.pollutiondata.tomorrow = data[3];
-                console.log('GOT pollutiondata.currently', $scope.pollutiondata);
+                console.log('POLLUTION DATA', $scope.pollutiondata);
                 if ($scope.AQI <= 50) {
                   $('#pollution-data').addClass('good');
                 } else if ($scope.AQI > 50 && $scope.AQI <= 100) {
@@ -130,12 +131,13 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
         function initMap() {
           var geocoder = new google.maps.Geocoder;
-
+          console.log("INITMAP()");
           geocodeLatLng(geocoder);
         }
 
         function geocodeLatLng(geocoder) {
           var latlng = {lat: parseFloat(lat), lng: parseFloat(long)};
+          console.log("GEOCODING!", latlng);
           geocoder.geocode({'location': latlng}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
               if (results[0]) {
