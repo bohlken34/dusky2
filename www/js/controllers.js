@@ -10,8 +10,14 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
   ionic.Platform.ready(function(){ // Waits for Ionic to load
 
+    $ionicLoading.show({
+            template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Initializing database!'
+        });
     // Initialize the database
     birthdayService.initDB();
+
+    $ionicLoading.hide();
+
 
     $scope.birthday = {
       originalDate: today,
@@ -68,6 +74,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
               SunCalc.getTimes(today, lat, long);
               console.log("GOT ALL BIRTHDAYS");
             });
+    $ionicLoading.hide();
 
             // Mess of times
             $scope.sunTimes = sunTime;
@@ -82,8 +89,15 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             $scope.NauticalDusk = sunTime[4].setTime;
             $scope.Night = sunTime[5].riseTime;
 
+    $ionicLoading.show({
+            template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Reverse geocoding coordinates!'
+        });
             initMap();
+    $ionicLoading.hide();
 
+    $ionicLoading.show({
+            template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Retrieving weather data!'
+        });
             Weather.getCurrentWeather(lat,long).then(function(resp) {
               $scope.current = resp.data;
               $scope.birthday.weatherSummary = $scope.current.currently.summary;
@@ -94,7 +108,11 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
               alert('Unable to get current conditions');
               console.error(error);
             });
+    $ionicLoading.hide();
 
+    $ionicLoading.show({
+            template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Retrieving pollution data!'
+        });
             var url = "http://www.airnowapi.org/aq/forecast/latLong/?format=application/json&";
             $scope.pollutiondata = {currently:null, tomorrow:null};
 
