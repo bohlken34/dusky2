@@ -30,6 +30,7 @@ var BirthdayService = ['$q', 'Loki',
         autosaveInterval: 1000,
         adapter: adapter
       });
+      console.log("DATABASE INITIALIZED!", _db);
     };
 
     function getAllBirthdays() {

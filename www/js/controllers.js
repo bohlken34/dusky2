@@ -14,8 +14,9 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Initializing database!'
         });
     // Initialize the database
+    console.log("initializing the database");
     birthdayService.initDB();
-
+    console.log("the database has been initialized");
     $ionicLoading.hide();
 
 
@@ -24,12 +25,6 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
       sunAngle: $scope.sunAngle,
       riseName: '',
       setName: '',
-    };
-    
-    $scope.takePicture = function() {
-      CameraService.getPicture().then(function(photo){
-        $scope.birthday.photo = photo;
-      });
     };
 
     $scope.saveBirthday = function() { // Adds birthday to database
@@ -66,15 +61,6 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
             var sunTime = SunCalc.getTimes(today, lat, long);
             var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
-            
-            // Get all birthday records from the database.
-            birthdayService.getAllBirthdays().then(function(birthdays) {
-              vm.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
-              SunCalc.timesData(birthdays);
-              SunCalc.getTimes(today, lat, long);
-              console.log("GOT ALL BIRTHDAYS");
-            });
-    $ionicLoading.hide();
 
             // Mess of times
             $scope.sunTimes = sunTime;
@@ -88,6 +74,19 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             $scope.Dusk = sunTime[3].setTime;
             $scope.NauticalDusk = sunTime[4].setTime;
             $scope.Night = sunTime[5].riseTime;
+    $ionicLoading.hide();
+
+    $ionicLoading.show({
+            template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Loading database!'
+    });
+            // Get all birthday records from the database.
+            birthdayService.getAllBirthdays().then(function(birthdays) {
+              vm.birthdays = birthdays; // adds birthdays to vm scope, which is global in this controller
+              SunCalc.timesData(birthdays);
+              //SunCalc.getTimes(today, lat, long);
+              console.log("GOT ALL BIRTHDAYS");
+            });
+    $ionicLoading.hide();
 
     $ionicLoading.show({
             template: '<ion-spinner class="spinner-energized" icon="lines"></ion-spinner><br/>Reverse geocoding coordinates!'
