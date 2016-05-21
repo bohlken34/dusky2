@@ -73,7 +73,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             $scope.Sunset = sunTime[1].setTime;
             $scope.Dusk = sunTime[3].setTime;
             $scope.NauticalDusk = sunTime[4].setTime;
-            $scope.Night = sunTime[5].riseTime;
+            $scope.Night = sunTime[5].setTime;
     $ionicLoading.hide();
 
     $ionicLoading.show({
