@@ -60,10 +60,13 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
             console.log("LOCATION", Location);
 
             var sunTime = SunCalc.getTimes(today, lat, long);
-            var $solarNoon = Date.parse(SunCalc.getTimes($scope.clock, lat, long).solarNoon);
+            console.log("SUNTIME: ", sunTime);
+            $solarNoon = Date.parse(sunTime[0].solarNoon);
+            console.log("SOLAR NOON: ", $solarNoon);
 
             // Mess of times
             $scope.sunTimes = sunTime;
+            
             $scope.MorningAstroTwilight = sunTime[5].riseTime;
             $scope.NauticalDawn = sunTime[4].riseTime;
             $scope.Dawn = sunTime[3].riseTime;
