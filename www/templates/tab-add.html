@@ -1,17 +1,19 @@
 <ion-view view-title="Add a Time">
-  <ion-content class="padding">
-    <h2 class="dusky--ta-c">The Current Time Is:</h2>
-    <h3 class="dusky--ta-c">{{ clock | date: 'medium' }}</h3>
-    <p class="dusky--ta-c">The current angle of the sun is: <strong ng-model="birthday.sunAngle">{{ sunAngle }}</strong>&deg</p>
-    <p>Current Address:<br>{{ city }}</p>
-    <div class="row">
-    	<div id="lbl-morning" class="col dusky--weak dusky--ta-c">Before Solar Noon</div>
-    	<div id="lbl-evening" class="col dusky--weak dusky--ta-c">After Solar Noon</div>
-    </div>
-    <div id="weather" class="dusky--ta-c">
-    	<h5><skycon icon="current.currently.icon" id="current-icon"></skycon> {{ current.currently.summary }}</h5>
-    	<p>The temperature now is <span class="large">{{ current.currently.temperature }}&degF</span></p>
-    	<p>The Air Quality Index is currently <span id="pollution-data" class="large">{{ pollutiondata.currently.AQI }}</span></p>
+  <ion-content>
+    <div class="padding">
+        <h2 class="dusky--ta-c">The Current Time Is:</h2>
+        <h3 class="dusky--ta-c">{{ clock | date: 'medium' }}</h3>
+        <p class="dusky--ta-c">The current angle of the sun is: <strong ng-model="birthday.sunAngle">{{ sunAngle }}</strong>&deg</p>
+        <p>Current Address:<br>{{ city }}</p>
+        <div class="row">
+        	<div id="lbl-morning" class="col dusky--weak dusky--ta-c">Before Solar Noon</div>
+        	<div id="lbl-evening" class="col dusky--weak dusky--ta-c">After Solar Noon</div>
+        </div>
+        <div id="weather" class="dusky--ta-c">
+        	<h5><skycon icon="current.currently.icon" id="current-icon"></skycon> {{ current.currently.summary }}</h5>
+        	<p>The temperature now is <span class="large">{{ current.currently.temperature }}&degF</span></p>
+        	<p>The Air Quality Index is currently <span id="pollution-data" class="large">{{ pollutiondata.currently.AQI }}</span></p>
+        </div>
     </div>
     <form name="lightNote">
         <div class="list">
@@ -27,48 +29,50 @@
                 <span class="input-label">Description (optional)</span>
                 <input type="text" ng-model="birthday.description" />
             </label>
-        	<button class="button button-full button-positive" type="submit" ng-click="saveBirthday()">Add Time</button>
+        	<button class="button button-full button-balanced" type="submit" ng-click="saveBirthday()">Add Time</button>
         </div>
     </form>
-    <div class="row" id="legend">
-    	<div class="col" id="before-sunrise">
-    		<p class="time-span dark morning-dark-time">12:00 AM - {{MorningAstroTwilight | date:"hh':'mm a"}}</p>
-    		<p class="time-span twilight morning-astro-time">{{MorningAstroTwilight | date:"hh':'mm a"}} - {{NauticalDawn | date:"hh':'mm a"}}</p>
-    		<p class="time-span twilight morning-nau-time">{{NauticalDawn | date:"hh':'mm a"}} - {{Dawn | date:"hh':'mm a"}}</p>
-    		<p class="time-span twilight morning-civil-time">{{Dawn | date:"hh':'mm a"}} - {{Sunrise | date:"hh':'mm a"}}</p>
-    	</div>
-    	<div class="col" id="before-sunrise-names">
-    		<p class="time-span">Night</p>
-    		<p class="time-span">Astronomical Twilight</p>
-    		<p class="time-span">Nautical Twilight</p>
-    		<p class="time-span">Civil Twilight</p>
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col" id="sunset-sunrise">
-    		<p class="time-span sunrise sunrise-time">{{Sunrise | date:"hh':'mm a"}} - {{SunriseEnd | date:"hh':'mm a"}}</p>
-    		<p class="time-span daylight daylight-time">{{SunriseEnd | date:"hh':'mm a"}} - {{SunsetStart | date:"hh':'mm a"}}</p>
-    		<p class="time-span sunset sunset-time">{{SunsetStart | date:"hh':'mm a"}} - {{Sunset | date:"hh':'mm a"}}</p>
-    	</div>
-    	<div class="col">
-    		<p class="time-span">Sunrise</p>
-    		<p class="time-span">Daylight</p>
-    		<p class="time-span">Sunset</p>
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col" id="after-sunset">
-			<p class="time-span twilight night-civil-time">{{Sunset | date:"hh':'mm a"}} - {{Dusk | date:"hh':'mm a"}}</p>
-    		<p class="time-span twilight night-nau-time">{{Dusk | date:"hh':'mm a"}} - {{NauticalDusk | date:"hh':'mm a"}}</p>
-    		<p class="time-span twilight night-astro-time">{{NauticalDusk | date:"hh':'mm a"}} - {{Night | date:"hh':'mm a"}}</p>
-    		<p class="time-span dark night-dark-time">{{Night | date:"hh':'mm a"}} - 11:59 PM</p>
-    	</div>
-    	<div class="col">
-    		<p class="time-span">Civil Twilight</p>
-    		<p class="time-span">Nautical Twilight</p>
-    		<p class="time-span">Astronomical Twilight</p>
-    		<p class="time-span">Night</p>
-    	</div>
+    <div class="padding">
+        <div class="row" id="legend">
+        	<div class="col" id="before-sunrise">
+        		<p class="time-span dark morning-dark-time">12:00 AM - {{MorningAstroTwilight | date:"hh':'mm a"}}</p>
+        		<p class="time-span twilight morning-astro-time">{{MorningAstroTwilight | date:"hh':'mm a"}} - {{NauticalDawn | date:"hh':'mm a"}}</p>
+        		<p class="time-span twilight morning-nau-time">{{NauticalDawn | date:"hh':'mm a"}} - {{Dawn | date:"hh':'mm a"}}</p>
+        		<p class="time-span twilight morning-civil-time">{{Dawn | date:"hh':'mm a"}} - {{Sunrise | date:"hh':'mm a"}}</p>
+        	</div>
+        	<div class="col" id="before-sunrise-names">
+        		<p class="time-span">Night</p>
+        		<p class="time-span">Astronomical Twilight</p>
+        		<p class="time-span">Nautical Twilight</p>
+        		<p class="time-span">Civil Twilight</p>
+        	</div>
+        </div>
+        <div class="row">
+        	<div class="col" id="sunset-sunrise">
+        		<p class="time-span sunrise sunrise-time">{{Sunrise | date:"hh':'mm a"}} - {{SunriseEnd | date:"hh':'mm a"}}</p>
+        		<p class="time-span daylight daylight-time">{{SunriseEnd | date:"hh':'mm a"}} - {{SunsetStart | date:"hh':'mm a"}}</p>
+        		<p class="time-span sunset sunset-time">{{SunsetStart | date:"hh':'mm a"}} - {{Sunset | date:"hh':'mm a"}}</p>
+        	</div>
+        	<div class="col">
+        		<p class="time-span">Sunrise</p>
+        		<p class="time-span">Daylight</p>
+        		<p class="time-span">Sunset</p>
+        	</div>
+        </div>
+        <div class="row">
+        	<div class="col" id="after-sunset">
+    			<p class="time-span twilight night-civil-time">{{Sunset | date:"hh':'mm a"}} - {{Dusk | date:"hh':'mm a"}}</p>
+        		<p class="time-span twilight night-nau-time">{{Dusk | date:"hh':'mm a"}} - {{NauticalDusk | date:"hh':'mm a"}}</p>
+        		<p class="time-span twilight night-astro-time">{{NauticalDusk | date:"hh':'mm a"}} - {{Night | date:"hh':'mm a"}}</p>
+        		<p class="time-span dark night-dark-time">{{Night | date:"hh':'mm a"}} - 11:59 PM</p>
+        	</div>
+        	<div class="col">
+        		<p class="time-span">Civil Twilight</p>
+        		<p class="time-span">Nautical Twilight</p>
+        		<p class="time-span">Astronomical Twilight</p>
+        		<p class="time-span">Night</p>
+        	</div>
+        </div>
     </div>
   </ion-content>
 </ion-view>
