@@ -57,6 +57,9 @@
 	width: 16px;
 	height: 16px;
 }
+.image-thumb {
+	width: 100%;
+}
 .good {
 	background-color: #00E400;
 }
@@ -82,4 +85,10 @@
 }
 .italic {
 	font-style:italic;
+}
+.pull-left {
+	float: left;
+}
+.pull-right {
+	float: right;
 }

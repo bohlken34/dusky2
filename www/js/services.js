@@ -123,6 +123,81 @@ var BirthdayService = ['$q', 'Loki',
   }
 ];
 
+var LocationStorageService = ['$q', 'Loki',
+  function LocationStorageService($q, Loki) {
+    var _db;
+    var _birthdays;
+
+    function initDB() {
+      var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+      _db = new Loki('locationsDB',
+      {
+        autosave: true,
+        autosaveInterval: 1000,
+        adapter: adapter
+      });
+      console.log("LOCATION DATABASE INITIALIZED!", _db);
+    };
+
+    function getAllLocations() {
+
+      return $q(function(resolve, reject) {
+        
+        var options = {
+          proto: Object,
+          inflate: function(src, dst) {
+            var prop;
+            for (prop in src) {
+              if (prop === 'Date') {
+                dst.Date = new Date(src.Date);
+              } else {
+                dst[prop] = src[prop];
+              }
+            }
+          }
+        };
+
+        _db.loadDatabase(options, function() {
+          _locations = _db.getCollection('locations');
+
+          if (!_locations) {
+            console.log('NO LOCATIONS IN DATABASE');
+            _locations = _db.addCollection('locations');
+          }
+
+          resolve(_locations.data);
+          console.log('GET action! The location database contains: ', _locations.data);
+        });
+      });
+    };
+
+    
+
+    function addLocation(location) {
+      _locations.insert(location);
+      console.log('ADD action! The location database now contains: ', _locations.data);
+    };
+
+    function updateLocation(location) {
+      _locations.update(location);
+      console.log('UPDATE action! The location database now contains: ', _locations.data);
+    };
+
+    function deleteLocation(location) {
+      _locations.remove(location);
+      console.log('DELETE action! The location database now contains: ', _locations.data);
+    };
+
+    return {
+      initDB: initDB,
+      getAllLocations: getAllLocations,
+      addLocation: addLocation,
+      updateLocation: updateLocation,
+      deleteLocation: deleteLocation
+    };
+  }
+];
+
 var app = angular.module('starter.services', ['ngResource', 'ngCordova']);
 
 app.factory('Location', function() {
@@ -153,6 +228,7 @@ app.factory('GeoService', function($ionicPlatform, $cordovaGeolocation) {
 app.factory('Weather', forecastioWeather);
 // Create database service
 app.factory('birthdayService', BirthdayService);
+app.factory('locationStorageService', LocationStorageService);
 
 app.factory('Pollution', function(lat, lng, $http, AIRNOWAPI_KEY) {
   var url = "http://www.airnowapi.org/aq/forecast/latLong/?format=application/json&";
@@ -173,7 +249,7 @@ function CameraService($q) {
   var me = this;
 
   me.options = {
-    quality: 80,
+    quality: 40,
     correctOrientation: true
   };
 

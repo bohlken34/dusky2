@@ -26,6 +26,7 @@
 			<p ng-if="time.originalLong !== undefined" class="item item-text-wrap">Longitude: {{time.originalLong}}</p>
 			<p ng-if="time.weatherSummary !== undefined" class="item item-text-wrap">Weather: {{time.weatherSummary}} <skycon icon="time.weatherIcon" id="detail-weather-icon"></skycon></p>
 			<p ng-if="time.description !== undefined" class="item item-text-wrap">Description: {{time.description}}</p>
+			<img ng-if="time.photo !== null" class="image-thumb" ng-src="{{time.photo}}"/>
 		</div>
 	</ion-content>
 </ion-modal-view>

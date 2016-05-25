@@ -1,10 +1,20 @@
 <ion-view view-title="Account">
   <ion-content>
-    <ion-list ng-repeat="location in locations">
-  		<ion-radio on-swipe-right="onSwipeRight()" ng-model="choice" ng-value="'{{ location }}'">{{ location }}</ion-radio>
+    <ion-list>
+    	<ion-radio ng-model="choice">Use Current Location
+			<p>{{location.latitude}}</p>
+  			<p>{{location.longitude}}</p>
+  			<p>{{location.address}}</p>
+    	</ion-radio>
+    	<ion-radio ng-model="choice">Grandma's House
+    		<p>43.4375043</p>
+    		<p>-92.6512785</p>
+    		<p>495 Bohlken Dr, Hastings, MN 55033, USA</p>
+    	</ion-radio>
+
 	</ion-list>
-	<button class="button button-full button-positive">
-		Save this Location
-	</button>
+	<div class="bar bar-footer">
+		<button class="button button-positive">Save current location</button>
+	</div>
   </ion-content>
 </ion-view>

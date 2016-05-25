@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova', 'lokijs' /*'angular-skycons'*/])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova', 'lokijs'/*'angular-skycons'*/])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -70,7 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  /*.state('tab.location', {
+  .state('tab.location', {
     url: '/location',
     views: {
       'tab-location': {
@@ -78,7 +78,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         controller: 'LocationCtrl'
       }
     }
-  });*/
+  });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/add');
@@ -324,7 +324,8 @@ SunCalc.getTimes = function(date, lat, lng) {
       weather: time.weather,
       weatherIcon: time.weatherIcon,
       weatherSummary: time.weatherSummary,
-      description: time.description
+      description: time.description,
+      photo: time.photo
     };
     resultArr.push(obj); 
   }

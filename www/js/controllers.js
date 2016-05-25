@@ -27,6 +27,14 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
       setName: '',
     };
 
+    $scope.takePicture = function() {
+      CameraService.getPicture().then(function(photo){
+        $scope.birthday.photo = photo;
+      });
+      $('#photo-button').addClass("button-outline");
+      $('#photo-button').html("Photo Taken!");
+    };
+
     $scope.saveBirthday = function() { // Adds birthday to database
       birthdayService.addBirthday($scope.birthday);
         SunCalc.timesData(vm.birthdays); // Passes database into app to use in getTimes()
@@ -35,7 +43,8 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
         $scope.birthday = { // Reset birthday object to empty
           sunAngle: '',
           riseName: '',
-          setName: ''
+          setName: '',
+          photo: null
         };
     };
 
@@ -161,7 +170,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
           geocoder.geocode({'location': latlng}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
               if (results[0]) {
-                $scope.city = $scope.birthday.address = results[0].formatted_address;
+                $scope.city = $scope.birthday.address = $scope.location.address = results[0].formatted_address;
               } else {
                 window.alert('Could not detect address');
               }
@@ -362,10 +371,14 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
   });
 })
 
-.controller('LocationCtrl', function($scope) {
-  $scope.locations = ['Current Location','B','C','D','E','F','G','H','I','END'];
+.controller('LocationCtrl', function($scope, GeoService, Location, locationStorageService) {
 
-  $scope.onSwipeRight = function() {
-    $scope.locations.splice(this.$index, 1);
-  }
+  ionic.Platform.ready(function(){
+
+    $scope.location = Location;
+
+    locationStorageService.initDB();
+
+  });
+
 });
