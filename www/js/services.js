@@ -59,33 +59,33 @@ var BirthdayService = ['$q', 'Loki',
             _birthdays = _db.addCollection('birthdays');
 
             _birthdays.insert({
-              riseName: 'sunrise',
-              setName: 'sunset',
+              riseName: 'Sunrise',
+              setName: 'Sunset',
               sunAngle: -0.833,
             });
             _birthdays.insert({
-              riseName: 'sunriseEnd',
-              setName: 'sunsetStart',
+              riseName: 'End of Sunrise',
+              setName: 'Start of Sunset',
               sunAngle: -0.3
             });
             _birthdays.insert({
-              riseName: 'dawn',
-              setName: 'dusk',
+              riseName: 'Dawn',
+              setName: 'Dusk',
               sunAngle: -6
             });
             _birthdays.insert({
-              riseName: 'nauticalDawn',
-              setName: 'nauticalDusk',
+              riseName: 'Nautical Dawn',
+              setName: 'Nautical Dusk',
               sunAngle: -12
             });
             _birthdays.insert({
-              riseName: 'nightEnd',
-              setName: 'night',
+              riseName: 'End of Astronomical Twilight',
+              setName: 'Start of Astronomical Twilight',
               sunAngle: -18
             });
             _birthdays.insert({
-              riseName: 'goldenHourEnd',
-              setName: 'goldenHour',
+              riseName: 'End of Golden Hour',
+              setName: 'Start of Golden Hour',
               sunAngle: 6
             });
           }

@@ -3,7 +3,7 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
 
 .constant('AIRNOWAPI_KEY', '7BCA95CD-4196-4FAB-B72D-F2911D8E4336') // AirNow API key
 
-.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService, CameraService, Location) {
+.controller('AddCtrl', function($scope, /*$cordovaGeolocation,*/ $ionicPopup, $ionicLoading, $ionicPlatform, $interval, Weather, $http, birthdayService, GeoService, CameraService, Location) {
   var lat, long, sunTime, $solarNoon;
   var today = new Date();
   var vm = this;
@@ -31,8 +31,6 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
       CameraService.getPicture().then(function(photo){
         $scope.birthday.photo = photo;
       });
-      $('#photo-button').addClass("button-outline");
-      $('#photo-button').html("Photo Taken!");
     };
 
     $scope.saveBirthday = function() { // Adds birthday to database
@@ -46,6 +44,27 @@ angular.module('starter.controllers', ['angular-skycons', 'onezone-datepicker'])
           setName: '',
           photo: null
         };
+    };
+
+    $scope.showConfirm = function() {
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Add a Photo',
+        template: 'Would you like to add a photo to this time?',
+        cancelText: 'No',
+        okText: 'Yes'
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          CameraService.getPicture().then(function(photo){
+            $scope.birthday.photo = photo;
+            console.log("Got dat photo!", $scope.birthday);
+            $scope.saveBirthday();
+            
+          });
+        } else {
+          $scope.saveBirthday();
+        }
+      });
     };
 
     $ionicLoading.show({
